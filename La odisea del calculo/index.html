@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>La Odisea del Cálculo</title>
+  <meta
+    name="description"
+    content="Juego narrativo 2D completo sobre la historia del cálculo, con Alex viajando por siglos de ideas, disputas y descubrimientos."
+  >
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div id="app">
+    <section id="title-screen" class="screen screen--active" aria-labelledby="game-title">
+      <div class="title-screen__backdrop"></div>
+      <div class="title-screen__constellation title-screen__constellation--left"></div>
+      <div class="title-screen__constellation title-screen__constellation--right"></div>
+
+      <div class="title-layout">
+        <article class="panel title-card">
+          <p class="eyebrow">Narrativa histórica interactiva</p>
+          <h1 id="game-title">The Odyssey of Calculus</h1>
+          <h2>La Odisea del Cálculo</h2>
+          <p class="title-card__lede">
+            Alex, un estudiante universitario abrumado por las fórmulas, cae dormido en clase y despierta
+            dentro de la larga historia humana del cálculo: áreas, tangentes, movimiento, infinito y rigor.
+          </p>
+
+          <div class="title-card__actions">
+            <button id="new-game-btn" class="button button--primary">Comenzar viaje</button>
+            <button id="continue-btn" class="button button--secondary">Continuar</button>
+            <button id="open-codex-from-title" class="button button--ghost">Abrir códice</button>
+          </div>
+
+          <div class="title-card__meta">
+            <p id="save-summary" class="title-card__summary">Aún no existe una travesía guardada.</p>
+            <p class="title-card__note">
+              Versión completa: del aula moderna a Siracusa, Cambridge, París y el regreso final de Alex al presente.
+            </p>
+          </div>
+        </article>
+
+        <aside class="panel roadmap-panel" aria-labelledby="roadmap-title">
+          <div class="roadmap-panel__header">
+            <p class="eyebrow">Mapa del viaje</p>
+            <h3 id="roadmap-title">Capítulos históricos</h3>
+          </div>
+          <ol id="chapter-roadmap" class="roadmap-list"></ol>
+
+          <div class="roadmap-panel__actions">
+            <button id="new-game-btn-side" class="button button--primary">Comenzar viaje</button>
+            <button id="continue-btn-side" class="button button--secondary">Continuar</button>
+            <button id="open-codex-from-roadmap" class="button button--ghost">Abrir códice</button>
+          </div>
+        </aside>
+      </div>
+    </section>
+
+    <section id="game-screen" class="screen" aria-hidden="true">
+      <div id="background-layer" class="background-layer">
+        <div class="background-layer__mist"></div>
+        <div class="background-layer__grid"></div>
+        <div class="background-layer__glow"></div>
+      </div>
+
+      <header class="hud">
+        <div class="hud__group">
+          <div id="chapter-chip" class="chip">Prólogo</div>
+          <div id="location-chip" class="chip chip--muted">Aula moderna</div>
+        </div>
+
+        <div class="hud__group">
+          <div id="insight-chip" class="chip chip--accent">Comprensión: 0</div>
+          <button id="journal-btn" class="hud-button">Códice</button>
+          <button id="settings-btn" class="hud-button">Ajustes</button>
+          <button id="title-btn" class="hud-button hud-button--subtle">Volver al título</button>
+        </div>
+      </header>
+
+      <div id="chapter-banner" class="chapter-banner" aria-hidden="true">
+        <div class="chapter-banner__inner">
+          <p id="chapter-banner-kicker" class="chapter-banner__kicker"></p>
+          <h3 id="chapter-banner-title" class="chapter-banner__title"></h3>
+          <p id="chapter-banner-text" class="chapter-banner__text"></p>
+        </div>
+      </div>
+
+      <main class="stage">
+        <div class="stage__decoration stage__decoration--left"></div>
+        <div class="stage__decoration stage__decoration--right"></div>
+
+        <section id="sprite-layer" class="sprite-layer" aria-label="Escena y personajes">
+          <!-- Replace the generated placeholders with real sprite PNG/SVG files later. -->
+          <div id="slot-left" class="sprite-slot sprite-slot--left"></div>
+          <div id="slot-center" class="sprite-slot sprite-slot--center"></div>
+          <div id="slot-right" class="sprite-slot sprite-slot--right"></div>
+        </section>
+
+        <section id="choice-panel" class="choice-panel hidden" aria-live="polite"></section>
+        <section id="interaction-panel" class="interaction-panel hidden" aria-live="polite"></section>
+
+        <section id="dialogue-panel" class="dialogue-panel" role="button" tabindex="0" aria-live="polite">
+          <div id="nameplate" class="nameplate"></div>
+          <p id="dialogue-text" class="dialogue-text"></p>
+          <div class="dialogue-panel__footer">
+            <span id="hint-text" class="hint-text">Haz clic para continuar</span>
+            <span id="save-indicator" class="save-indicator">Guardado automático</span>
+          </div>
+        </section>
+      </main>
+    </section>
+  </div>
+
+  <div id="codex-modal" class="modal hidden" aria-hidden="true" role="dialog" aria-labelledby="codex-title">
+    <div class="modal__scrim" data-close-modal="codex"></div>
+    <div class="modal__panel modal__panel--wide">
+      <header class="modal__header">
+        <div>
+          <p class="eyebrow">Cuaderno de viaje</p>
+          <h3 id="codex-title">Códice histórico</h3>
+          <p id="codex-progress" class="modal__subtext"></p>
+        </div>
+        <button class="modal__close" data-close-modal="codex" aria-label="Cerrar códice">Cerrar</button>
+      </header>
+
+      <div class="codex-layout">
+        <aside id="codex-list" class="codex-list" aria-label="Entradas del códice"></aside>
+        <article id="codex-detail" class="codex-detail" aria-live="polite"></article>
+      </div>
+    </div>
+  </div>
+
+  <div id="settings-modal" class="modal hidden" aria-hidden="true" role="dialog" aria-labelledby="settings-title">
+    <div class="modal__scrim" data-close-modal="settings"></div>
+    <div class="modal__panel">
+      <header class="modal__header">
+        <div>
+          <p class="eyebrow">Preferencias</p>
+          <h3 id="settings-title">Ajustes</h3>
+          <p class="modal__subtext">Controles ligeros para este prototipo jugable.</p>
+        </div>
+        <button class="modal__close" data-close-modal="settings" aria-label="Cerrar ajustes">Cerrar</button>
+      </header>
+
+      <div class="settings-group">
+        <button id="toggle-text-btn" class="setting-toggle" type="button"></button>
+        <button id="toggle-motion-btn" class="setting-toggle" type="button"></button>
+      </div>
+
+      <div class="settings-group settings-group--footer">
+        <button id="reset-progress-btn" class="button button--danger" type="button">Borrar guardado</button>
+      </div>
+    </div>
+  </div>
+
+  <template id="codex-entry-template">
+    <button class="codex-list__item" type="button">
+      <span class="codex-list__status"></span>
+      <span class="codex-list__text"></span>
+    </button>
+  </template>
+
+  <script src="script.js"></script>
+</body>
+</html>
